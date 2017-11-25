@@ -18,7 +18,7 @@ export default class TwitterGateway {
         this.client = new Twitter(credential);
     }
 
-    public async getTweet(screenName: string, idStr: string): Promise<Tweet> {
+    public async getTweet(idStr: string): Promise<Tweet> {
         return new Promise<Tweet>((resolve, reject) => {
             this.client.get("statuses/show", { id: idStr }, (error, response: Tweet) => {
                 if (error) {

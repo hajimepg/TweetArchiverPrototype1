@@ -10,7 +10,7 @@ const twitterGateway = new TwitterGateway({
 });
 
 (async () => {
-    const tweet = await twitterGateway.getTweet("hajimepg", "934296995212156928");
+    const tweet = await twitterGateway.getTweet("934296995212156928");
 
     console.log(JSON.stringify(tweet, null, 4));
 })()
