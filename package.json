@@ -1,0 +1,11 @@
+{
+  "name": "TweetArchiver1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^8.0.53",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1"
+  }
+}
