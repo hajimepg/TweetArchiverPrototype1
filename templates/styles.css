@@ -21,3 +21,16 @@
 .icon img {
     border-radius: 5px;
 }
+
+.name {
+    font-size: 15px;
+    margin-bottom: 7px;
+}
+
+.text {
+    margin-bottom: 7px;
+}
+
+.time {
+    font-size: 13px;
+}
