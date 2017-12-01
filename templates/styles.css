@@ -1,0 +1,23 @@
+.container {
+    width: 600px;
+    margin: 0 auto;
+}
+
+.tweets {
+    padding: 15px;
+}
+
+.tweet {
+    position: relative;
+    padding: 0 15px 15px 60px;
+}
+
+.icon {
+    position: absolute;
+    top: 0;
+    left: 5px;
+}
+
+.icon img {
+    border-radius: 5px;
+}
