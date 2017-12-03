@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+import * as fs from "fs";
+import * as path from "path";
+
+import { downloadProfileImage } from "./downloadProfileImage";
 import * as FileSystemUtil from "./fileSystemUtil";
 import TwitterGateway from "./twitterGateway";
 
@@ -16,7 +20,17 @@ const twitterGateway = new TwitterGateway({
     console.log(JSON.stringify(tweet, null, 4));
 
     const dirName = FileSystemUtil.createDirName(tweet.user.screen_name, tweet.created_at, tweet.id_str);
-    console.log(dirName);
+    fs.mkdirSync(dirName);
+
+    for (const staticFileName of ["normalize.css", "styles.css"]) {
+        const src = path.join("./templates", staticFileName);
+        const dest = path.join(dirName, staticFileName);
+
+        fs.copyFileSync(src, dest);
+    }
+
+    const iconFileName = await downloadProfileImage(tweet.user.profile_image_url, dirName, "icon");
+
 })()
 .catch(
     (error) => console.log(error)
