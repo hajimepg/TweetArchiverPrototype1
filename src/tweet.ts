@@ -1,3 +1,5 @@
+import User from "./user";
+
 /* tslint:disable:variable-name */
 export default class Tweet {
     public created_at: string;
@@ -17,7 +19,7 @@ export default class Tweet {
     public in_reply_to_user_id: number;
     public in_reply_to_user_id_str: string;
     public in_reply_to_screen_name: string;
-    public user: { id: number, id_str: string };
+    public user: User;
     public geo: any;
     public coordinates: any;
     public place: any;

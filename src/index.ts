@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import * as FileSystemUtil from "./fileSystemUtil";
 import TwitterGateway from "./twitterGateway";
 
 const twitterGateway = new TwitterGateway({
@@ -10,9 +11,12 @@ const twitterGateway = new TwitterGateway({
 });
 
 (async () => {
-    const tweet = await twitterGateway.getTweet("934296995212156928");
-
+    const tweetId = "936980956044435461";
+    const tweet = await twitterGateway.getTweet(tweetId);
     console.log(JSON.stringify(tweet, null, 4));
+
+    const dirName = FileSystemUtil.createDirName(tweet.user.screen_name, tweet.created_at, tweet.id_str);
+    console.log(dirName);
 })()
 .catch(
     (error) => console.log(error)
