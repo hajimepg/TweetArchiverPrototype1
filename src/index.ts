@@ -3,6 +3,8 @@
 import * as fs from "fs";
 import * as path from "path";
 
+import * as Nunjucks from "nunjucks";
+
 import { downloadProfileImage } from "./downloadProfileImage";
 import * as FileSystemUtil from "./fileSystemUtil";
 import TwitterGateway from "./twitterGateway";
@@ -17,7 +19,6 @@ const twitterGateway = new TwitterGateway({
 (async () => {
     const tweetId = "936980956044435461";
     const tweet = await twitterGateway.getTweet(tweetId);
-    console.log(JSON.stringify(tweet, null, 4));
 
     const dirName = FileSystemUtil.createDirName(tweet.user.screen_name, tweet.created_at, tweet.id_str);
     fs.mkdirSync(dirName);
@@ -31,6 +32,16 @@ const twitterGateway = new TwitterGateway({
 
     const iconFileName = await downloadProfileImage(tweet.user.profile_image_url, dirName, "icon");
 
+    /* tslint:disable:object-literal-sort-keys */
+    const data = {
+        tweet,
+        iconFileName,
+    };
+    /* tslint:enable:object-literal-sort-keys */
+
+    const env = Nunjucks.configure("templates");
+    const indexFileName = path.join(dirName, "index.html");
+    fs.writeFileSync(indexFileName, env.render("index.njk", data));
 })()
 .catch(
     (error) => console.log(error)
