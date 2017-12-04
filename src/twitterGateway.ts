@@ -2,7 +2,7 @@ import * as assert from "assert";
 
 import * as Twitter from "twitter";
 
-import Tweet from "./tweet";
+import Tweet from "./twitterObjects/tweet";
 
 interface ITwitterCredential {
     access_token_key: string | undefined;
