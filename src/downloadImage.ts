@@ -13,6 +13,35 @@ function getExtension(contentType: string | undefined): string {
     }
 }
 
+export async function downloadMedia(mediaUrl: string, imageDir: string, baseFileName: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        http.get(mediaUrl, (res) => {
+            if (res.statusCode !== 200) {
+                reject(new Error(`download ${mediaUrl} failed. statusCode=${res.statusCode}`));
+                return;
+            }
+
+            const contentType = res.headers["content-type"];
+            const extension: string = getExtension(contentType);
+            if (extension === "") {
+                reject(new Error(`Unsupported content-type: ${contentType}`));
+                return;
+            }
+
+            const chunks: Buffer[] = [];
+            res.on("data", (chunk: Buffer) => {
+                chunks.push(chunk);
+            });
+            res.on("end", () => {
+                const filename = `${baseFileName}.${extension}`;
+                const imageData = Buffer.concat(chunks);
+                fs.writeFileSync(path.join(imageDir, filename), imageData);
+                resolve(filename);
+            });
+        });
+    });
+}
+
 function getOriginalImageUrl(profileImageUrl: string): string {
     return profileImageUrl.replace("_normal", "");
 }

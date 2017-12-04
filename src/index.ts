@@ -5,7 +5,7 @@ import * as path from "path";
 
 import * as Nunjucks from "nunjucks";
 
-import { downloadProfileImage } from "./downloadProfileImage";
+import { downloadMedia, downloadProfileImage } from "./downloadImage";
 import * as FileSystemUtil from "./fileSystemUtil";
 import TwitterGateway from "./twitterGateway";
 
@@ -17,8 +17,9 @@ const twitterGateway = new TwitterGateway({
 });
 
 (async () => {
-    const tweetId = "936980956044435461";
+    const tweetId = "937669009108955136";
     const tweet = await twitterGateway.getTweet(tweetId);
+    // console.log(JSON.stringify(tweet, null, 4));
 
     const dirName = FileSystemUtil.createDirName(tweet.user.screen_name, tweet.created_at, tweet.id_str);
     fs.mkdirSync(dirName);
@@ -31,6 +32,14 @@ const twitterGateway = new TwitterGateway({
     }
 
     const iconFileName = await downloadProfileImage(tweet.user.profile_image_url, dirName, "icon");
+
+    let num = 1;
+    for (const mediaEntity of tweet.entities.media) {
+        const numStr = (num < 10) ? `0${num}` : `${num}`;
+        const mediaFileName = await downloadMedia(mediaEntity.media_url, dirName, numStr);
+        console.log(mediaFileName);
+        num++;
+    }
 
     /* tslint:disable:object-literal-sort-keys */
     const data = {
