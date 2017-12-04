@@ -1,3 +1,4 @@
+import Entities from "./entities";
 import User from "./user";
 
 /* tslint:disable:variable-name */
@@ -7,12 +8,7 @@ export default class Tweet {
     public id_str: string;
     public text: string;
     public truncated: boolean;
-    public entities: {
-        hashtags: Array<{ text: string, indicies: number[] }>,
-        symbols: any[],
-        user_mentions: any[],
-        urls: any[]
-    };
+    public entities: Entities;
     public source: string;
     public in_reply_to_status_id: number;
     public in_reply_to_status_id_str: string;
