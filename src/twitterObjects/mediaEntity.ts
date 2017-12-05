@@ -1,4 +1,4 @@
-import MediaSize from "./mediaEntity";
+import MediaSize from "./mediaSize";
 
 /* tslint:disable:variable-name */
 export default class MediaEntity {
