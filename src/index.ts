@@ -33,11 +33,31 @@ const twitterGateway = new TwitterGateway({
 
     const iconFileName = await downloadProfileImage(tweet.user.profile_image_url, dirName, "icon");
 
+    const images = new Array<object>();
     let num = 1;
     for (const mediaEntity of tweet.entities.media) {
         const numStr = (num < 10) ? `0${num}` : `${num}`;
         const mediaFileName = await downloadMedia(mediaEntity.media_url, dirName, numStr);
-        console.log(mediaFileName);
+
+        let imageWidth: number;
+        let imageHeight: number;
+
+        if (mediaEntity.sizes.medium.w > 400) {
+            const resizeRate = mediaEntity.sizes.medium.w / 400;
+            imageWidth = mediaEntity.sizes.medium.w / resizeRate;
+            imageHeight = mediaEntity.sizes.medium.h / resizeRate;
+        }
+        else {
+            imageWidth = mediaEntity.sizes.medium.w;
+            imageHeight = mediaEntity.sizes.medium.h;
+        }
+
+        images.push({
+            fileName: mediaFileName,
+            height: imageHeight,
+            width: imageWidth
+        });
+
         num++;
     }
 
@@ -45,6 +65,7 @@ const twitterGateway = new TwitterGateway({
     const data = {
         tweet,
         iconFileName,
+        images,
     };
     /* tslint:enable:object-literal-sort-keys */
 

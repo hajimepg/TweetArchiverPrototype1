@@ -17,6 +17,9 @@
                     <div class="name"><strong>{{ tweet.user.name }}</strong><span>@{{ tweet.user.screen_name }}</span></div>
                     <div class="text">{{ tweet.text }}</div>
                     <div class="time">{{ tweet.created_at }}</div>
+                    {% for image in images %}
+                        <img src="{{ image.fileName }}" width="{{ image.width }}px", height="{{ image.height }}px">
+                    {% endfor %}
                 </article>
             </section>
         </div>
