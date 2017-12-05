@@ -40,23 +40,31 @@ const twitterGateway = new TwitterGateway({
             const numStr = (num < 10) ? `0${num}` : `${num}`;
             const mediaFileName = await downloadMedia(mediaEntity.media_url, dirName, numStr);
 
-            let imageWidth: number;
-            let imageHeight: number;
+            const imageWidth = mediaEntity.sizes.medium.w;
+            const imageHeight = mediaEntity.sizes.medium.h;
 
-            if (mediaEntity.sizes.medium.w > 400) {
-                const resizeRate = mediaEntity.sizes.medium.w / 400;
-                imageWidth = mediaEntity.sizes.medium.w / resizeRate;
-                imageHeight = mediaEntity.sizes.medium.h / resizeRate;
+            let displayWidth: number;
+            let displayHeight: number;
+
+            if (imageWidth >= imageHeight && imageWidth > 400) {
+                const resizeRate = imageWidth / 400;
+                displayWidth = imageWidth / resizeRate;
+                displayHeight = imageHeight / resizeRate;
+            }
+            else if (imageHeight > imageWidth && imageHeight > 400) {
+                const resizeRate = imageHeight / 400;
+                displayWidth = imageWidth / resizeRate;
+                displayHeight = imageHeight / resizeRate;
             }
             else {
-                imageWidth = mediaEntity.sizes.medium.w;
-                imageHeight = mediaEntity.sizes.medium.h;
+                displayWidth = imageWidth;
+                displayHeight = imageHeight;
             }
 
             images.push({
                 fileName: mediaFileName,
-                height: imageHeight,
-                width: imageWidth
+                height: displayHeight,
+                width: displayWidth
             });
 
             num++;
