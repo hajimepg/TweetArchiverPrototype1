@@ -1,4 +1,5 @@
 import Entities from "./entities";
+import ExtendedEntities from "./extendedEntities";
 import User from "./user";
 
 /* tslint:disable:variable-name */
@@ -9,6 +10,7 @@ export default class Tweet {
     public text: string;
     public truncated: boolean;
     public entities: Entities;
+    public extended_entities?: ExtendedEntities;
     public source: string;
     public in_reply_to_status_id: number;
     public in_reply_to_status_id_str: string;

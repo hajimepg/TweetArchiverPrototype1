@@ -34,31 +34,33 @@ const twitterGateway = new TwitterGateway({
     const iconFileName = await downloadProfileImage(tweet.user.profile_image_url, dirName, "icon");
 
     const images = new Array<object>();
-    let num = 1;
-    for (const mediaEntity of tweet.entities.media) {
-        const numStr = (num < 10) ? `0${num}` : `${num}`;
-        const mediaFileName = await downloadMedia(mediaEntity.media_url, dirName, numStr);
+    if (tweet.extended_entities !== undefined) {
+        let num = 1;
+        for (const mediaEntity of tweet.extended_entities.media) {
+            const numStr = (num < 10) ? `0${num}` : `${num}`;
+            const mediaFileName = await downloadMedia(mediaEntity.media_url, dirName, numStr);
 
-        let imageWidth: number;
-        let imageHeight: number;
+            let imageWidth: number;
+            let imageHeight: number;
 
-        if (mediaEntity.sizes.medium.w > 400) {
-            const resizeRate = mediaEntity.sizes.medium.w / 400;
-            imageWidth = mediaEntity.sizes.medium.w / resizeRate;
-            imageHeight = mediaEntity.sizes.medium.h / resizeRate;
+            if (mediaEntity.sizes.medium.w > 400) {
+                const resizeRate = mediaEntity.sizes.medium.w / 400;
+                imageWidth = mediaEntity.sizes.medium.w / resizeRate;
+                imageHeight = mediaEntity.sizes.medium.h / resizeRate;
+            }
+            else {
+                imageWidth = mediaEntity.sizes.medium.w;
+                imageHeight = mediaEntity.sizes.medium.h;
+            }
+
+            images.push({
+                fileName: mediaFileName,
+                height: imageHeight,
+                width: imageWidth
+            });
+
+            num++;
         }
-        else {
-            imageWidth = mediaEntity.sizes.medium.w;
-            imageHeight = mediaEntity.sizes.medium.h;
-        }
-
-        images.push({
-            fileName: mediaFileName,
-            height: imageHeight,
-            width: imageWidth
-        });
-
-        num++;
     }
 
     /* tslint:disable:object-literal-sort-keys */
