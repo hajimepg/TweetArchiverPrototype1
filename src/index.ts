@@ -4,6 +4,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 import * as Nunjucks from "nunjucks";
+import * as TwitterText from "twitter-text";
 
 import { downloadMedia, downloadProfileImage } from "./downloadImage";
 import * as FileSystemUtil from "./fileSystemUtil";
@@ -76,6 +77,7 @@ const twitterGateway = new TwitterGateway({
         tweet,
         iconFileName,
         images,
+        text: TwitterText.autoLink(tweet.text, { urlEntities: tweet.entities.urls }),
     };
     /* tslint:enable:object-literal-sort-keys */
 

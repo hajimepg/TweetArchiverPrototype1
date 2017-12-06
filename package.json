@@ -9,6 +9,7 @@
     "nunjucks": "^3.0.1",
     "tslint": "^5.8.0",
     "twitter": "^1.7.1",
+    "twitter-text": "^1.14.7",
     "typescript": "^2.6.1"
   }
 }
