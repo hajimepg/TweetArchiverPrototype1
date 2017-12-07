@@ -12,32 +12,31 @@ import { downloadMedia, downloadProfileImage } from "./downloadImage";
 import * as FileSystemUtil from "./fileSystemUtil";
 import TwitterGateway from "./twitterGateway";
 
+let tweetId: string | undefined;
+
 const commandLineParser = Commander
     .version("0.0.1")
-    .arguments("<tweet_url>");
+    .arguments("<tweet_url>")
+    .action((tweetUrlValue) => {
+        const tweetUrl = url.parse(tweetUrlValue);
+        if (tweetUrl.hostname !== "twitter.com" || tweetUrl.pathname === undefined) {
+            return;
+        }
+
+        const regExpResult = /^\/[\w\d]+\/status\/(\d+)$/.exec(tweetUrl.pathname);
+        if (regExpResult === null) {
+            return;
+        }
+
+        tweetId = regExpResult[1];
+    });
 
 commandLineParser.parse(process.argv);
 
-if (commandLineParser.args.length === 0) {
+if (tweetId === undefined) {
     commandLineParser.help();
     process.exit(1);
 }
-
-const tweetUrl = url.parse(commandLineParser.args[0]);
-if (tweetUrl.hostname !== "twitter.com" || tweetUrl.pathname === undefined) {
-    commandLineParser.help();
-    process.exit(1);
-}
-
-const tweetPathNameRegExp = /^\/[\w\d]+\/status\/(\d+)$/;
-const tweetPathNameRegExpResult = tweetPathNameRegExp.exec((tweetUrl.pathname as string));
-
-if (tweetPathNameRegExpResult === null) {
-    commandLineParser.help();
-    process.exit(1);
-}
-
-const tweetId = (tweetPathNameRegExpResult as RegExpExecArray)[1];
 
 const twitterGateway = new TwitterGateway({
     access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
@@ -47,7 +46,7 @@ const twitterGateway = new TwitterGateway({
 });
 
 (async () => {
-    const tweet = await twitterGateway.getTweet(tweetId);
+    const tweet = await twitterGateway.getTweet((tweetId as string));
     // console.log(JSON.stringify(tweet, null, 4));
 
     const dirName = FileSystemUtil.createDirName(tweet.user.screen_name, tweet.created_at, tweet.id_str);
