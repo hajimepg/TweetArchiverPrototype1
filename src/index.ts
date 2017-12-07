@@ -2,13 +2,42 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import * as url from "url";
 
+import * as Commander from "commander";
 import * as Nunjucks from "nunjucks";
 import * as TwitterText from "twitter-text";
 
 import { downloadMedia, downloadProfileImage } from "./downloadImage";
 import * as FileSystemUtil from "./fileSystemUtil";
 import TwitterGateway from "./twitterGateway";
+
+const commandLineParser = Commander
+    .version("0.0.1")
+    .arguments("<tweet_url>");
+
+commandLineParser.parse(process.argv);
+
+if (commandLineParser.args.length === 0) {
+    commandLineParser.help();
+    process.exit(1);
+}
+
+const tweetUrl = url.parse(commandLineParser.args[0]);
+if (tweetUrl.hostname !== "twitter.com" || tweetUrl.pathname === undefined) {
+    commandLineParser.help();
+    process.exit(1);
+}
+
+const tweetPathNameRegExp = /^\/[\w\d]+\/status\/(\d+)$/;
+const tweetPathNameRegExpResult = tweetPathNameRegExp.exec((tweetUrl.pathname as string));
+
+if (tweetPathNameRegExpResult === null) {
+    commandLineParser.help();
+    process.exit(1);
+}
+
+const tweetId = (tweetPathNameRegExpResult as RegExpExecArray)[1];
 
 const twitterGateway = new TwitterGateway({
     access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
@@ -18,7 +47,6 @@ const twitterGateway = new TwitterGateway({
 });
 
 (async () => {
-    const tweetId = "937669009108955136";
     const tweet = await twitterGateway.getTweet(tweetId);
     // console.log(JSON.stringify(tweet, null, 4));
 
